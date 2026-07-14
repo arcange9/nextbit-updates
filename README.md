@@ -173,18 +173,6 @@ netlify dev
 | http://localhost:8888/.netlify/functions/settings | Settings API |
 
 ---
-
-## 🔑 Default Admin Credentials
-
-| Field | Value |
-|-------|-------|
-| Email | nextbitupdates@gmail.com |
-| Password | NextBit2009@ |
-| Admin URL | /admin.html |
-| Dashboard | /dashboard.html |
-
----
-
 ## ✏️ How to Customize
 
 ### Change Your Logo
