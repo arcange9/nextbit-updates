@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>News - NextBit Updates</title>
+  <meta name="description" content="Latest Tech Updates and AI Tools news from NextBit Updates.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="site-header"><div class="container"><nav class="nav-wrapper">
+  <a href="index.html" class="nav-logo"><img data-site-logo src="" alt="" style="display:none"><span class="nav-logo-text" data-site-name>NextBit Updates</span></a>
+  <div class="nav-links"><a href="index.html">Home</a><a href="news.html" class="active">News</a><a href="about.html">About</a><a href="contact.html">Contact</a><a href="subscribe.html" class="nav-cta">&#9654; Subscribe</a></div>
+  <button class="hamburger"><span></span><span></span><span></span></button>
+</nav>
+<div class="mobile-menu"><a href="index.html">Home</a><a href="news.html">News</a><a href="about.html">About</a><a href="contact.html">Contact</a><a href="subscribe.html">&#9654; Subscribe</a></div>
+</div></header>
+
+<div class="page-hero"><div class="container">
+  <div class="section-label" style="justify-content:center;margin-bottom:12px;">&#128240; All Articles</div>
+  <h1>Tech &amp; AI <span style="background:linear-gradient(135deg,var(--neon-blue),var(--neon-purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">News</span></h1>
+  <p>Stay updated with the latest in Tech and AI &mdash; curated for makers, builders, and earners.</p>
+</div></div>
+
+<section style="padding:20px 0 80px;"><div class="container">
+  <div class="filter-bar">
+    <button class="filter-btn active" data-cat="all">All Articles</button>
+    <button class="filter-btn" data-cat="Tech Updates">&#9889; Tech Updates</button>
+    <button class="filter-btn" data-cat="AI Tools">&#129302; AI Tools</button>
+  </div>
+  <div id="articles-grid" class="articles-grid"><div class="loading-spinner"></div></div>
+  <div id="pagination" class="pagination"></div>
+</div></section>
+
+<section class="newsletter-section" style="padding-top:0;"><div class="container">
+  <div class="newsletter-box">
+    <h2>Never Miss an Update</h2>
+    <p>Subscribe for weekly Tech &amp; AI insights.</p>
+    <form class="newsletter-form"><input type="email" placeholder="your@email.com" required><button type="submit" class="btn btn-primary">Subscribe</button></form>
+    <p class="newsletter-msg"></p>
+  </div>
+</div></section>
+
+<footer class="site-footer"><div class="container">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <img data-site-logo src="" alt="" style="display:none">
+      <div class="footer-brand-name" data-site-name>NextBit Updates</div>
+      <p>Make Money Online, Tech Updates &amp; AI Tools.</p>
+      <div class="social-links">
+        <a href="https://youtube.com/channel/UC62YGDEkG-BLs4XC8gLn-Kw" target="_blank" class="social-link" data-social-youtube>&#9654;</a>
+        <a href="https://facebook.com/NextBitUpdates" target="_blank" class="social-link" data-social-facebook>f</a>
+        <a href="https://twitter.com/NextBitUpdates" target="_blank" class="social-link" data-social-twitter>&#120143;</a>
+        <a href="https://instagram.com/NextBitUpdates" target="_blank" class="social-link" data-social-instagram>&#128247;</a>
+      </div>
+    </div>
+    <div class="footer-col"><h4>Pages</h4><ul><li><a href="index.html">Home</a></li><li><a href="news.html">News</a></li><li><a href="about.html">About</a></li><li><a href="contact.html">Contact</a></li></ul></div>
+    <div class="footer-col"><h4>Categories</h4><ul><li><a href="news.html?cat=Tech+Updates">&#9889; Tech Updates</a></li><li><a href="news.html?cat=AI+Tools">&#129302; AI Tools</a></li></ul></div>
+    <div class="footer-col"><h4>Contact</h4><ul><li><a href="mailto:nextbitupdates@gmail.com">nextbitupdates@gmail.com</a></li></ul></div>
+  </div>
+  <div class="footer-bottom"><p>&copy; <span data-copyright-year></span> <span data-site-name>NextBit Updates</span>. All rights reserved.</p></div>
+</div></footer>
+
+<script src="app.js"></script>
+<script>
+const LIMIT=9;let currentPage=1,currentCat='all',totalCount=0;
+const urlParams=new URLSearchParams(window.location.search);
+if(urlParams.get('cat')){currentCat=urlParams.get('cat');}
+async function loadArticles(page=1,cat='all'){
+  const grid=document.getElementById('articles-grid');
+  grid.innerHTML='<div class="loading-spinner"></div>';
+  let url=`${API_BASE}/articles?limit=${LIMIT}&page=${page}`;
+  if(cat!=='all')url+=`&category=${encodeURIComponent(cat)}`;
+  try{
+    const res=await fetch(url);const data=await res.json();
+    const articles=data.articles||[];totalCount=data.total||articles.length;
+    if(articles.length===0){
+      grid.innerHTML='<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">&#128240;</div><p>No articles found in this category yet.</p></div>';
+      document.getElementById('pagination').innerHTML='';return;
+    }
+    grid.innerHTML=articles.map(a=>buildArticleCard(a)).join('');
+    renderPagination(page,Math.ceil(totalCount/LIMIT));
+  }catch(e){
+    grid.innerHTML='<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">&#9888;&#65039;</div><p>Failed to load articles. Please refresh.</p></div>';
+  }
+}
+function renderPagination(current,total){
+  const pg=document.getElementById('pagination');
+  if(total<=1){pg.innerHTML='';return;}
+  let html=`<button class="page-btn" ${current===1?'disabled':''} onclick="gotoPage(${current-1})">&lsaquo;</button>`;
+  for(let i=1;i<=total;i++)html+=`<button class="page-btn${i===current?' active':''}" onclick="gotoPage(${i})">${i}</button>`;
+  html+=`<button class="page-btn" ${current===total?'disabled':''} onclick="gotoPage(${current+1})">&rsaquo;</button>`;
+  pg.innerHTML=html;
+}
+function gotoPage(p){currentPage=p;loadArticles(p,currentCat);window.scrollTo({top:0,behavior:'smooth'});}
+document.querySelectorAll('.filter-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');currentCat=btn.dataset.cat;currentPage=1;loadArticles(1,currentCat);
+  });
+});
+if(currentCat!=='all'){
+  document.querySelectorAll('.filter-btn').forEach(btn=>{
+    btn.classList.remove('active');
+    if(btn.dataset.cat===currentCat)btn.classList.add('active');
+  });
+}
+document.addEventListener('DOMContentLoaded',()=>{loadArticles(currentPage,currentCat);});
+</script>
+</body></html>

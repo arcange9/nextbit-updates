@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Login - NextBit Updates</title><link rel="stylesheet" href="style.css"></head>
+<body>
+<div class="admin-login-page">
+  <div class="admin-login-box">
+    <div class="admin-login-logo">
+      <div style="font-size:2.5rem;">&#9889;</div>
+      <h1>NextBit Admin</h1>
+      <p>Sign in to manage your content</p>
+    </div>
+    <form id="login-form">
+      <div class="form-group"><label>Email</label><input type="email" id="email" placeholder="nextbitupdates@gmail.com" required autocomplete="email"></div>
+      <div class="form-group"><label>Password</label><input type="password" id="password" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;" required autocomplete="current-password"></div>
+      <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;margin-top:8px;" id="login-btn">Sign In &rarr;</button>
+      <div id="login-error" style="display:none;margin-top:12px;" class="form-msg error"></div>
+    </form>
+    <div style="margin-top:20px;padding-top:20px;border-top:1px solid var(--border);text-align:center;">
+      <a href="index.html" style="font-size:0.82rem;color:var(--text-muted);">&larr; Back to Site</a>
+    </div>
+  </div>
+</div>
+<script>
+if(localStorage.getItem('admin_token')){window.location.href='dashboard.html';}
+document.getElementById('login-form').addEventListener('submit',async(e)=>{
+  e.preventDefault();
+  const btn=document.getElementById('login-btn');
+  const err=document.getElementById('login-error');
+  const email=document.getElementById('email').value.trim();
+  const password=document.getElementById('password').value;
+  btn.disabled=true;btn.textContent='Signing in...';err.style.display='none';
+  try{
+    const res=await fetch('/.netlify/functions/admin/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password})});
+    const data=await res.json();
+    if(res.ok&&data.token){localStorage.setItem('admin_token',data.token);window.location.href='dashboard.html';}
+    else{err.textContent=data.error||'Invalid credentials. Please try again.';err.style.display='block';}
+  }catch{err.textContent='Connection error. Please try again.';err.style.display='block';}
+  btn.disabled=false;btn.textContent='Sign In →';
+});
+</script>
+</body></html>

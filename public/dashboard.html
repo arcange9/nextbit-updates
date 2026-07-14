@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard - NextBit Admin</title><link rel="stylesheet" href="style.css"></head>
+<body style="background:var(--bg-primary);">
+
+<header class="admin-header">
+  <div class="admin-header-brand">&#9889; NextBit Admin</div>
+  <div style="display:flex;align-items:center;gap:12px;">
+    <a href="index.html" style="font-size:0.82rem;color:var(--text-muted);" target="_blank">View Site &#8599;</a>
+    <button onclick="logout()" class="btn btn-outline btn-sm">Sign Out</button>
+  </div>
+</header>
+
+<div class="admin-body">
+  <nav class="admin-sidebar">
+    <a href="#" onclick="showTab('overview');return false;" id="nav-overview" class="active">&#128202; Overview</a>
+    <a href="#" onclick="showTab('articles');return false;" id="nav-articles">&#128240; Articles</a>
+    <a href="#" onclick="showTab('settings');return false;" id="nav-settings">&#9881;&#65039; Settings</a>
+  </nav>
+
+  <div class="admin-content">
+
+    <!-- OVERVIEW -->
+    <div id="tab-overview" class="admin-tab-panel active">
+      <h2>Dashboard Overview</h2>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:16px;margin-bottom:32px;">
+        <div class="stat-card"><div class="stat-card-num" id="stat-articles">-</div><div class="stat-card-label">Total Articles</div></div>
+        <div class="stat-card"><div class="stat-card-num" id="stat-subscribers">-</div><div class="stat-card-label">Newsletter Subscribers</div></div>
+        <div class="stat-card"><div class="stat-card-num" id="stat-contacts">-</div><div class="stat-card-label">Contact Messages</div></div>
+      </div>
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;">
+        <h3 style="font-family:var(--font-display);font-size:1rem;font-weight:700;margin-bottom:16px;">Quick Actions</h3>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;">
+          <button onclick="showTab('articles');switchArticleView('create')" class="btn btn-primary btn-sm">+ New Article</button>
+          <button onclick="showTab('settings')" class="btn btn-outline btn-sm">&#9881;&#65039; Edit Settings</button>
+          <a href="index.html" target="_blank" class="btn btn-outline btn-sm">View Site &#8599;</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ARTICLES -->
+    <div id="tab-articles" class="admin-tab-panel">
+      <h2>Manage Articles</h2>
+      <div class="admin-tab-bar">
+        <button class="admin-tab-btn active" onclick="switchArticleView('list')" id="art-tab-list">&#128203; All Articles</button>
+        <button class="admin-tab-btn" onclick="switchArticleView('create')" id="art-tab-create">+ Create New</button>
+      </div>
+      <div id="art-view-list"><div id="articles-table-wrapper"><div class="loading-spinner"></div></div></div>
+      <div id="art-view-create" style="display:none;">
+        <div class="create-article-form">
+          <h3>Create New Article</h3>
+          <form id="create-article-form">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+              <div class="form-group" style="grid-column:1/-1;"><label>Title *</label><input type="text" name="title" placeholder="Article title..." required></div>
+              <div class="form-group"><label>Category *</label>
+                <select name="category" required>
+                  <option value="Tech Updates">&#9889; Tech Updates</option>
+                  <option value="AI Tools">&#129302; AI Tools</option>
+                </select>
+              </div>
+              <div class="form-group"><label>Read Time</label><input type="text" name="readTime" placeholder="e.g. 5 min read"></div>
+              <div class="form-group" style="grid-column:1/-1;"><label>Thumbnail URL</label><input type="url" name="thumbnail" placeholder="https://example.com/image.jpg"></div>
+              <div class="form-group" style="grid-column:1/-1;"><label>Excerpt / Summary</label><textarea name="excerpt" placeholder="Brief description shown in article cards..." style="min-height:80px;"></textarea></div>
+              <div class="form-group" style="grid-column:1/-1;"><label>Content (HTML supported)</label><textarea name="content" placeholder="Full article content... HTML like &lt;h2&gt;, &lt;p&gt;, &lt;ul&gt;, &lt;strong&gt;, &lt;blockquote&gt; all supported." style="min-height:220px;" required></textarea></div>
+              <div class="form-group"><label style="display:flex;align-items:center;gap:8px;cursor:pointer;"><input type="checkbox" name="published" checked> Publish immediately</label></div>
+            </div>
+            <div style="display:flex;gap:12px;margin-top:8px;">
+              <button type="submit" class="btn btn-primary" id="create-article-btn">Publish Article</button>
+              <button type="button" onclick="switchArticleView('list')" class="btn btn-outline">Cancel</button>
+            </div>
+            <div id="create-msg" style="margin-top:12px;"></div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div id="tab-settings" class="admin-tab-panel">
+      <h2>Site Settings</h2>
+      <div class="settings-form">
+        <h3>Global Site Settings</h3>
+        <p style="font-size:0.875rem;color:var(--text-muted);margin-bottom:24px;">These settings apply site-wide &mdash; header, hero, and footer.</p>
+        <form id="settings-form">
+          <div class="settings-section">
+            <h4>Branding</h4>
+            <div class="form-group"><label>Company Name</label><input type="text" name="companyName" placeholder="NextBit Updates"></div>
+            <div class="form-group"><label>Logo URL</label><input type="url" name="logoUrl" placeholder="https://example.com/logo.png" id="logo-url-input">
+              <p style="font-size:0.78rem;color:var(--text-muted);margin-top:6px;">Any direct image URL. Leave blank to use text logo.</p>
+            </div>
+            <div id="logo-preview" style="display:none;margin-top:12px;">
+              <p style="font-size:0.78rem;color:var(--text-muted);margin-bottom:8px;">Preview:</p>
+              <img id="logo-preview-img" src="" alt="Logo" style="max-height:60px;border-radius:6px;border:1px solid var(--border);padding:6px;background:var(--bg-secondary);">
+            </div>
+          </div>
+          <div class="settings-section">
+            <h4>Footer</h4>
+            <div class="form-group"><label>Copyright Year</label><input type="number" name="copyrightYear" placeholder="2025" min="2020" max="2099"></div>
+          </div>
+          <div class="settings-section">
+            <h4>Social Links</h4>
+            <div class="form-group"><label>YouTube URL</label><input type="url" name="socialYoutube" placeholder="https://youtube.com/channel/..."></div>
+            <div class="form-group"><label>Facebook URL</label><input type="url" name="socialFacebook" placeholder="https://facebook.com/NextBitUpdates"></div>
+            <div class="form-group"><label>Twitter / X URL</label><input type="url" name="socialTwitter" placeholder="https://twitter.com/NextBitUpdates"></div>
+            <div class="form-group"><label>Instagram URL</label><input type="url" name="socialInstagram" placeholder="https://instagram.com/NextBitUpdates"></div>
+          </div>
+          <button type="submit" class="btn btn-primary" id="save-settings-btn">Save All Settings</button>
+          <div id="settings-msg" style="margin-top:12px;"></div>
+        </form>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API='/.netlify/functions';
+const token=localStorage.getItem('admin_token');
+if(!token){window.location.href='admin.html';}
+
+function logout(){localStorage.removeItem('admin_token');window.location.href='admin.html';}
+
+function showTab(name){
+  document.querySelectorAll('.admin-tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.admin-sidebar a').forEach(a=>a.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  document.getElementById('nav-'+name).classList.add('active');
+  if(name==='articles')loadArticles();
+  if(name==='settings')loadSettings();
+  if(name==='overview')loadStats();
+}
+
+function switchArticleView(view){
+  document.getElementById('art-view-list').style.display=view==='list'?'block':'none';
+  document.getElementById('art-view-create').style.display=view==='create'?'block':'none';
+  document.getElementById('art-tab-list').classList.toggle('active',view==='list');
+  document.getElementById('art-tab-create').classList.toggle('active',view==='create');
+  if(view==='list')loadArticles();
+}
+
+function showToast(msg,type='success'){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.className='toast '+type;
+  requestAnimationFrame(()=>{t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3500);});
+}
+
+async function loadStats(){
+  try{
+    const res=await fetch(`${API}/admin/articles`,{headers:{Authorization:`Bearer ${token}`}});
+    if(res.status===401){logout();return;}
+    const data=await res.json();
+    document.getElementById('stat-articles').textContent=data.articles?.length||0;
+    document.getElementById('stat-subscribers').textContent=data.subscriberCount??'-';
+    document.getElementById('stat-contacts').textContent=data.contactCount??'-';
+  }catch(e){}
+}
+
+async function loadArticles(){
+  const wrapper=document.getElementById('articles-table-wrapper');
+  wrapper.innerHTML='<div class="loading-spinner"></div>';
+  try{
+    const res=await fetch(`${API}/admin/articles`,{headers:{Authorization:`Bearer ${token}`}});
+    if(res.status===401){logout();return;}
+    const data=await res.json();
+    const articles=data.articles||[];
+    if(articles.length===0){
+      wrapper.innerHTML='<div class="empty-state"><div class="empty-icon">&#128240;</div><p>No articles yet. Create your first one!</p></div>';return;
+    }
+    wrapper.innerHTML=`<div style="overflow-x:auto;"><table class="admin-articles-table">
+      <thead><tr><th>Title</th><th>Category</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
+      <tbody>${articles.map(a=>`<tr>
+        <td class="article-title-cell">${a.title}</td>
+        <td><span class="article-category ${a.category==='AI Tools'?'cat-ai':'cat-tech'}" style="position:static;display:inline-block;">${a.category}</span></td>
+        <td><span style="font-size:0.75rem;padding:3px 8px;border-radius:4px;background:${a.published?'rgba(16,185,129,0.15)':'rgba(239,68,68,0.15)'};color:${a.published?'#10b981':'#ef4444'}">${a.published?'Published':'Draft'}</span></td>
+        <td style="font-family:var(--font-mono);font-size:0.78rem;">${new Date(a.createdAt).toLocaleDateString()}</td>
+        <td><div style="display:flex;gap:8px;align-items:center;">
+          <a href="article.html?slug=${a.slug}" target="_blank" style="font-size:0.78rem;color:var(--neon-blue);">View</a>
+          <button onclick="deleteArticle('${a._id}')" class="delete-btn">Delete</button>
+        </div></td>
+      </tr>`).join('')}</tbody>
+    </table></div>`;
+  }catch(e){
+    wrapper.innerHTML='<div class="empty-state"><div class="empty-icon">&#9888;&#65039;</div><p>Failed to load. Please refresh.</p></div>';
+  }
+}
+
+async function deleteArticle(id){
+  if(!confirm('Delete this article? This cannot be undone.'))return;
+  try{
+    const res=await fetch(`${API}/admin/articles/${id}`,{method:'DELETE',headers:{Authorization:`Bearer ${token}`}});
+    if(res.ok){showToast('Article deleted.','success');loadArticles();}
+    else{const d=await res.json();showToast(d.error||'Delete failed.','error');}
+  }catch{showToast('Network error.','error');}
+}
+
+document.getElementById('create-article-form').addEventListener('submit',async(e)=>{
+  e.preventDefault();
+  const form=e.target;const btn=document.getElementById('create-article-btn');const msg=document.getElementById('create-msg');
+  const payload={title:form.title.value.trim(),category:form.category.value,readTime:form.readTime.value.trim()||'3 min read',thumbnail:form.thumbnail.value.trim(),excerpt:form.excerpt.value.trim(),content:form.content.value.trim(),published:form.published.checked};
+  btn.disabled=true;btn.textContent='Publishing...';msg.innerHTML='';
+  try{
+    const res=await fetch(`${API}/admin/articles`,{method:'POST',headers:{'Content-Type':'application/json',Authorization:`Bearer ${token}`},body:JSON.stringify(payload)});
+    const data=await res.json();
+    if(res.ok){msg.innerHTML='<div class="form-msg success">&#9989; Article published!</div>';form.reset();form.published.checked=true;setTimeout(()=>switchArticleView('list'),1500);}
+    else{msg.innerHTML=`<div class="form-msg error">&#10060; ${data.error||'Failed to create.'}</div>`;}
+  }catch{msg.innerHTML='<div class="form-msg error">&#10060; Network error.</div>';}
+  btn.disabled=false;btn.textContent='Publish Article';
+});
+
+async function loadSettings(){
+  try{
+    const res=await fetch(`${API}/settings`);const data=await res.json();const s=data.settings||{};
+    const form=document.getElementById('settings-form');
+    form.companyName.value=s.companyName||'NextBit Updates';
+    form.logoUrl.value=s.logoUrl||'';
+    form.copyrightYear.value=s.copyrightYear||new Date().getFullYear();
+    form.socialYoutube.value=s.socialLinks?.youtube||'';
+    form.socialFacebook.value=s.socialLinks?.facebook||'';
+    form.socialTwitter.value=s.socialLinks?.twitter||'';
+    form.socialInstagram.value=s.socialLinks?.instagram||'';
+    if(s.logoUrl){document.getElementById('logo-preview-img').src=s.logoUrl;document.getElementById('logo-preview').style.display='block';}
+  }catch(e){}
+}
+
+document.getElementById('logo-url-input').addEventListener('input',function(){
+  const preview=document.getElementById('logo-preview');const img=document.getElementById('logo-preview-img');
+  if(this.value){img.src=this.value;preview.style.display='block';}else{preview.style.display='none';}
+});
+
+document.getElementById('settings-form').addEventListener('submit',async(e)=>{
+  e.preventDefault();
+  const form=e.target;const btn=document.getElementById('save-settings-btn');const msg=document.getElementById('settings-msg');
+  const payload={companyName:form.companyName.value.trim(),logoUrl:form.logoUrl.value.trim(),copyrightYear:parseInt(form.copyrightYear.value)||new Date().getFullYear(),socialLinks:{youtube:form.socialYoutube.value.trim(),facebook:form.socialFacebook.value.trim(),twitter:form.socialTwitter.value.trim(),instagram:form.socialInstagram.value.trim()}};
+  btn.disabled=true;btn.textContent='Saving...';msg.innerHTML='';
+  try{
+    const res=await fetch(`${API}/admin/settings`,{method:'PUT',headers:{'Content-Type':'application/json',Authorization:`Bearer ${token}`},body:JSON.stringify(payload)});
+    const data=await res.json();
+    if(res.ok){msg.innerHTML='<div class="form-msg success">&#9989; Settings saved! Changes appear site-wide.</div>';}
+    else{msg.innerHTML=`<div class="form-msg error">&#10060; ${data.error||'Save failed.'}</div>`;}
+  }catch{msg.innerHTML='<div class="form-msg error">&#10060; Network error.</div>';}
+  btn.disabled=false;btn.textContent='Save All Settings';
+});
+
+document.addEventListener('DOMContentLoaded',()=>{loadStats();});
+</script>
+</body></html>

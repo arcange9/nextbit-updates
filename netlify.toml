@@ -1,0 +1,73 @@
+[build]
+  publish = "public"
+  functions = "functions"
+
+[functions]
+  node_bundler = "esbuild"
+
+[[redirects]]
+  from = "/api/articles/:slug"
+  to = "/.netlify/functions/articles/:slug"
+  status = 200
+
+[[redirects]]
+  from = "/api/articles"
+  to = "/.netlify/functions/articles"
+  status = 200
+
+[[redirects]]
+  from = "/api/subscribe"
+  to = "/.netlify/functions/subscribe"
+  status = 200
+
+[[redirects]]
+  from = "/api/contact"
+  to = "/.netlify/functions/contact"
+  status = 200
+
+[[redirects]]
+  from = "/api/settings"
+  to = "/.netlify/functions/settings"
+  status = 200
+
+[[redirects]]
+  from = "/api/seed"
+  to = "/.netlify/functions/seed"
+  status = 200
+
+[[redirects]]
+  from = "/api/admin/login"
+  to = "/.netlify/functions/admin/login"
+  status = 200
+
+[[redirects]]
+  from = "/api/admin/articles/:id"
+  to = "/.netlify/functions/admin/articles/:id"
+  status = 200
+
+[[redirects]]
+  from = "/api/admin/articles"
+  to = "/.netlify/functions/admin/articles"
+  status = 200
+
+[[redirects]]
+  from = "/api/admin/settings"
+  to = "/.netlify/functions/admin/settings"
+  status = 200
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+[[headers]]
+  for = "/style.css"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+
+[[headers]]
+  for = "/app.js"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
