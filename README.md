@@ -138,16 +138,6 @@ https://YOUR-SITE.netlify.app/.netlify/functions/seed?key=nextbit-seed-2025
 
 ---
 
-### STEP 5 — Log Into Admin Dashboard
-
-1. Visit: `https://YOUR-SITE.netlify.app/admin.html`
-2. Login with:
-   - **Email:** `nextbitupdates@gmail.com`
-   - **Password:** `NextBit2009@`
-3. You'll be redirected to the **Dashboard**
-
----
-
 ## 🛠 LOCAL DEVELOPMENT
 
 ### Requirements
